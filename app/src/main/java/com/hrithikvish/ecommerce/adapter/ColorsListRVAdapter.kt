@@ -79,15 +79,4 @@ class ColorsListRVAdapter(var context: Context, val binding: ActivityMainBinding
         val colorImage : ImageView = view.findViewById(R.id.colorimg)
     }
 
-    private fun compressImage(imageUri: Uri): Bitmap {
-        val bytes: ByteArray
-        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
-        val byteArrayOutputStream = ByteArrayOutputStream()
-        val scaledBitmap =
-            Bitmap.createScaledBitmap(bitmap, 100, 100, true)
-        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream)
-        bytes = byteArrayOutputStream.toByteArray()
-        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
-    }
-
 }
