@@ -1,6 +1,10 @@
 package com.hrithikvish.ecommerce.adapter
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +12,12 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.hrithikvish.ecommerce.R
 import com.hrithikvish.ecommerce.databinding.ActivityMainBinding
 import com.hrithikvish.ecommerce.models.Attributes
+import java.io.ByteArrayOutputStream
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 
 class ColorsListRVAdapter(var context: Context, val binding: ActivityMainBinding) : RecyclerView.Adapter<ColorsListRVAdapter.colorViewHolder>() {
 
@@ -39,6 +46,7 @@ class ColorsListRVAdapter(var context: Context, val binding: ActivityMainBinding
         binding.colorsRvProgressBar.visibility = View.GONE
         Glide.with(context)
             .load(attribute.swatch_url)
+            .apply(RequestOptions().override(200, 200))
             .into(holder.colorImage)
 
         //making the first item selected by default
@@ -70,4 +78,16 @@ class ColorsListRVAdapter(var context: Context, val binding: ActivityMainBinding
     class colorViewHolder(view : View) : ViewHolder(view) {
         val colorImage : ImageView = view.findViewById(R.id.colorimg)
     }
+
+    private fun compressImage(imageUri: Uri): Bitmap {
+        val bytes: ByteArray
+        val bitmap = MediaStore.Images.Media.getBitmap(context.contentResolver, imageUri)
+        val byteArrayOutputStream = ByteArrayOutputStream()
+        val scaledBitmap =
+            Bitmap.createScaledBitmap(bitmap, 100, 100, true)
+        scaledBitmap.compress(Bitmap.CompressFormat.JPEG, 25, byteArrayOutputStream)
+        bytes = byteArrayOutputStream.toByteArray()
+        return BitmapFactory.decodeByteArray(bytes, 0, bytes.size)
+    }
+
 }
